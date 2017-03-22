@@ -16,7 +16,7 @@ var cloudant = Cloudant({account:'489b3031-dbe9-4b24-bb10-fdf08d768cf2-bluemix',
     }
     var db = cloudant.db.use('todolist');
 
-    app.get('/todo',function(red, res){
+    app.get('/',function(red, res){
         db.list({include_docs: true}, function(err, body){
             if(!err){
                 res.render('todo.ejs', {todolist:body.rows});
@@ -25,22 +25,22 @@ var cloudant = Cloudant({account:'489b3031-dbe9-4b24-bb10-fdf08d768cf2-bluemix',
     })
 
         /* On ajoute un élément à la todolist */
-    .post('/todo/ajouter/', urlencodedParser, function(req, res) {
+    .post('/ajouter/', urlencodedParser, function(req, res) {
         if (req.body.newtodo != '') {
             var newdata = {'todo': req.body.newtodo};
             db.insert(newdata, function(err, result) {
-                res.redirect('/todo');
+                res.redirect('/');
             });
         }
     })
 
     /* Supprime un élément de la todolist */
-    .get('/todo/supprimer/:id', function(req, res) {
+    .get('/supprimer/:id', function(req, res) {
         if (req.params.id != '') {
             db.get(req.params.id, { revs_info: true }, function(err, body) {
                 if (!err) {
                     db.destroy(req.params.id, body._rev, function(err, body) {
-                        res.redirect('/todo');
+                        res.redirect('/');
                     });
                 }
             });
